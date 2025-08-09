@@ -1,0 +1,3 @@
+<div class="topnav">
+    <input oninput="updateSidebar(this.value)" type="search" name="search" list="searchwords">
+</div>

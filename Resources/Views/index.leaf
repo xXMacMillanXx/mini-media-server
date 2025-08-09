@@ -1,12 +1,15 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-
-  <title>#(title)</title>
-</head>
-
-<body>
-  <h1>#(title)</h1>
-</body>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Media Center</title>
+        <link rel="stylesheet" href="/css/main.css">
+        <script src="/js/main.js"></script>
+    </head>
+    <body>
+        #extend("sidebar")
+        #extend("searchbar")
+        <div id="content" class="main">
+            #extend("video")
+        </div>
+    </body>
 </html>

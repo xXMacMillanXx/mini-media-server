@@ -1,0 +1,10 @@
+<div id="video-list" class="sidenav">
+    #for(link in sidebarLinks):
+        <a href="#" onclick="changeContent('#(path)#(link)')">#(link)</a>
+    #endfor
+    <datalist id="searchwords">
+        #for(link in sidebarLinks):
+            <option value="#(link)">
+        #endfor
+    </datalist>
+</div>
