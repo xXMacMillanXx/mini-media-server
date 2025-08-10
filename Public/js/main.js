@@ -24,6 +24,12 @@ async function changeContent(path) {
   document.getElementById("content").innerHTML = html;
 }
 
+async function changeDirectory(path) {
+  const res = await fetch(`/contentdirectory/${path}`);
+  const html = await res.text();
+  document.getElementById("video-list").outerHTML = html;
+}
+
 async function updateSidebar(search) {
   const res = await fetch(`/sidebarsearch/${search}`);
   const html = await res.text();

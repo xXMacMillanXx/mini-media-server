@@ -35,7 +35,59 @@ class Utils {
         }
     }
 
-    /// Default returnes everything recursive
+    /// Returned files and directories are shallow
+    static func getFilesAndDirectories(atPath path: String) -> (
+        root: String, files: [String], directories: [String]
+    ) {
+        var files: [String] = []
+        var dicts: [String] = []
+
+        do {
+            let contents = try fileManager.contentsOfDirectory(atPath: path)
+            for elem in contents {
+                var isDir: ObjCBool = false
+                let fullPath = (path as NSString).appendingPathComponent(elem)
+                _ = fileManager.fileExists(atPath: fullPath, isDirectory: &isDir)
+                if isDir.boolValue {
+                    dicts.append(elem)
+                } else {
+                    files.append(elem)
+                }
+            }
+        } catch {
+            print("[Error] Issue with getting info for \(path)")
+        }
+
+        return (root: path, files: files.sorted(), directories: dicts.sorted())
+    }
+
+    /// Returns files and directories deep
+    static func getFilesAndDirectoriesDeep(atPath path: String) -> (
+        files: [String], directories: [String]
+    ) {
+        let contents = getFilesAndDirectories(atPath: path)
+        var ret_files: [String] = []
+        var ret_dirs: [String] = []
+
+        func walk(content: (root: String, files: [String], directories: [String])) {
+            for file in content.files {
+                ret_files.append("\(content.root)/\(file)")
+            }
+            ret_dirs.append(content.root)
+
+            for dir in content.directories {
+                let ncon = getFilesAndDirectories(atPath: "\(content.root)/\(dir)")
+                walk(content: ncon)
+            }
+        }
+
+        walk(content: contents)
+
+        return (files: ret_files.sorted(), directories: ret_dirs.sorted())
+    }
+
+    /*
+    /// Default returnes everything recursive, but doesn't work with symbolic links
     static func getFilesAndDictionaries(atPath path: String, shallowSearch shallow: Bool = false)
         -> (
             files: [String], dictionaries: [String]
@@ -52,12 +104,14 @@ class Utils {
 
         if let enumerator = fileManager.enumerator(
             at: rootURL,
-            includingPropertiesForKeys: [.isDirectoryKey],
+            includingPropertiesForKeys: [.isDirectoryKey, .isSymbolicLinkKey],
             options: options
         ) {
             for case let fileURL as URL in enumerator {
                 do {
-                    let resourceValues = try fileURL.resourceValues(forKeys: [.isDirectoryKey])
+                    let resourceValues = try fileURL.resourceValues(forKeys: [
+                        .isDirectoryKey, .isSymbolicLinkKey,
+                    ])
                     if resourceValues.isDirectory == true {
                         dicts.append(fileURL.path)
                     } else {
@@ -70,4 +124,5 @@ class Utils {
         }
         return (files: files.sorted(), dictionaries: dicts.sorted())
     }
+    */
 }

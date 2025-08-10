@@ -1,8 +1,14 @@
 <div id="video-list" class="sidenav">
+    #for(dir in sidebarDirectories):
+        <a href="#" onclick="changeDirectory('#(path)#(dir)')">#(dir)</a>
+    #endfor
     #for(link in sidebarLinks):
         <a href="#" onclick="changeContent('#(path)#(link)')">#(link)</a>
     #endfor
     <datalist id="searchwords">
+        #for(dir in sidebarDirectories):
+            <option value="#(dir)">
+        #endfor
         #for(link in sidebarLinks):
             <option value="#(link)">
         #endfor
