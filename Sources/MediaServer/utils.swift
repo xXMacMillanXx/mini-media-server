@@ -7,12 +7,13 @@ class Utils {
     static func getDirectories(atPath path: String) -> [String] {
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: path)
-            let directories = contents.filter { item in
+            var directories = contents.filter { item in
                 var isDir: ObjCBool = false
                 let fullPath = (path as NSString).appendingPathComponent(item)
                 _ = fileManager.fileExists(atPath: fullPath, isDirectory: &isDir)
                 return isDir.boolValue
             }
+            directories.append("..")
             return directories.sorted()
         } catch {
             return []
@@ -40,7 +41,7 @@ class Utils {
         root: String, files: [String], directories: [String]
     ) {
         var files: [String] = []
-        var dicts: [String] = []
+        var dicts: [String] = [".."]
 
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: path)

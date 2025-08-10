@@ -17,23 +17,31 @@ struct IndexContext: Encodable {
     let videoTag: String
 }
 
+/* TODO
+ * - Filter for supported file formats
+ * - remove '..' when showing root folder
+ * - change player dependent on media (video, autio, document, ...)
+*/
+
 func routes(_ app: Application) throws {
     app.get { req -> EventLoopFuture<View> in
-        let videoDirectory = "\(app.directory.publicDirectory)/videos/"
+        let mainSource = "/media/"
+        req.session.data["dir"] = mainSource
+        let videoDirectory = "\(app.directory.publicDirectory)\(mainSource)"
 
         let files = Utils.getFiles(atPath: videoDirectory)
-        guard let randomFile = files.filter({ $0.hasSuffix(".mp4") }).randomElement() else {
-            throw Abort(.notFound, reason: "No video files found.")
-        }
+        let randomFile = files.filter({ $0.hasSuffix(".mp4") }).randomElement() ?? ""
+        //guard let randomFile = files.filter({ $0.hasSuffix(".mp4") }).randomElement() else {
+        //    throw Abort(.notFound, reason: "No video files found.")
+        //}
 
-        let videoPath = "/videos/\(randomFile)"
+        let videoPath = "\(mainSource)\(randomFile)"
         let links = Utils.getFilesAndDirectories(atPath: videoDirectory)
-        req.session.data["dir"] = "/videos/"
 
         return req.view.render(
             "index",
             IndexContext(
-                path: "/videos/", sidebarLinks: links.files, sidebarDirectories: links.directories,
+                path: mainSource, sidebarLinks: links.files, sidebarDirectories: links.directories,
                 videoTag: videoPath
             ))
     }
