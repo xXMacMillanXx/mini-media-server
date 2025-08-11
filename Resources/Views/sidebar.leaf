@@ -1,9 +1,9 @@
 <div id="video-list" class="sidenav">
     #for(dir in sidebarDirectories):
-        <a href="#" onclick="changeDirectory('#(path)#(dir)')">#(dir)</a>
+        <a href="#" onclick="changeDirectory('#(path)#(dir)');clear_searchbar();">#(dir)</a>
     #endfor
     #for(link in sidebarLinks):
-        <a href="#" onclick="changeContent('#(path)#(link)')">#(link)</a>
+        <a href="#" onclick="changeContent('#(path)#(link)');">#(link)</a>
     #endfor
     <datalist id="searchwords">
         #for(dir in sidebarDirectories):

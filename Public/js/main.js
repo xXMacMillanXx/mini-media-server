@@ -31,6 +31,9 @@ async function changeDirectory(path) {
 }
 
 async function updateSidebar(search) {
+  if (search == "..") {
+    return;
+  }
   const res = await fetch(`/sidebarsearch/${search}`);
   const html = await res.text();
   document.getElementById("video-list").outerHTML = html;
