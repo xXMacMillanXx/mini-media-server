@@ -28,14 +28,13 @@ let supported = [
     "web": [".link"],
 ]
 
-func getSupportedMedia() -> [String] {
-    var supportedMedia: [String] = []
+var supportedMedia: [String] {
+    var supportedFormats: [String] = []
     for fileFormats in supported.values {
-        supportedMedia += fileFormats
+        supportedFormats += fileFormats
     }
-    return supportedMedia
+    return supportedFormats
 }
-let supportedMedia = getSupportedMedia()
 
 func contentFilter(name: String) -> Bool {
     for videoFormat in supportedMedia {
@@ -48,7 +47,7 @@ func contentFilter(name: String) -> Bool {
 
 /* TODO
  * - change player dependent on media (video, autio, document, ...)
- * - change css, the page is weird (page can go sideways, search bar is to short)
+ * - Videos with [] in name have %20 instead of spaces...
 */
 
 func routes(_ app: Application) throws {
@@ -57,15 +56,8 @@ func routes(_ app: Application) throws {
         req.session.data["rootdir"] = mainSource
         req.session.data["dir"] = mainSource
         let videoDirectory = "\(app.directory.publicDirectory)\(mainSource)"
+        let videoPath = "\(mainSource)"
 
-        let files = Utils.getFiles(atPath: videoDirectory).filter(contentFilter)
-        //let firstFile = files.filter({ $0.hasSuffix(".mp4") }).first ?? ""
-        //guard let randomFile = files.filter({ $0.hasSuffix(".mp4") }).randomElement() else {
-        //    throw Abort(.notFound, reason: "No video files found.")
-        //}
-        let firstFile = files.first ?? ""
-
-        let videoPath = "\(mainSource)\(firstFile)"
         var links = Utils.getFilesAndDirectories(atPath: videoDirectory)
         if req.session.data["dir"] == req.session.data["rootdir"] {
             links.directories.removeFirst()

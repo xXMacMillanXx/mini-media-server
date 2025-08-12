@@ -1,3 +1,11 @@
-<div class="topnav">
-    <input oninput="updateSidebar(this.value)" type="search" name="search" list="searchwords">
+<div class="search-bar">
+    <button class="button is-dark hamburger" id="toggleSidebar">
+        <span class="navbar-burger">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </span>
+    </button>
+    <input class="input is-rounded" oninput="updateSidebar(this.value)" type="search" name="search" list="searchwords" placeholder="Search...">
 </div>

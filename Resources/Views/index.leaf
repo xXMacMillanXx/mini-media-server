@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Media Center</title>
         <link rel="stylesheet" href="/css/main.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
         <script src="/js/main.js"></script>
     </head>
     <body>
-        #extend("sidebar")
-        #extend("searchbar")
-        <div id="content" class="main">
-            #extend("video")
+        <div class="layout">
+            #extend("sidebar")
+            <div class="overlay" id="overlay"></div>
+            <div class="main-section">
+                #extend("searchbar")
+                <div id="content" class="content-area">
+                    #extend("video")
+                </div>
+            </div>
         </div>
     </body>
 </html>

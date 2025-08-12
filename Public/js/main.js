@@ -27,7 +27,7 @@ async function changeContent(path) {
 async function changeDirectory(path) {
   const res = await fetch(`/contentdirectory/${path}`);
   const html = await res.text();
-  document.getElementById("video-list").outerHTML = html;
+  document.getElementById("sidebar").outerHTML = html;
 }
 
 async function updateSidebar(search) {
@@ -36,46 +36,26 @@ async function updateSidebar(search) {
   }
   const res = await fetch(`/sidebarsearch/${search}`);
   const html = await res.text();
-  document.getElementById("video-list").outerHTML = html;
+  document.getElementById("sidebar").outerHTML = html;
 }
 
-/*
-var m_pos;
-function resize(e) {
-    let dx = m_pos - e.x;
-    m_pos = e.x;
-    set_sidebar_width(m_pos + dx);
-}
+window.onload = function () {
+  const toggleBtn = document.getElementById("toggleSidebar");
+  const overlay = document.getElementById("overlay");
 
-window.onload = function() {
-    let sidebar = document.getElementById('video-list');
-    sidebar.addEventListener("mousedown", function(e) {
-        if (e.offsetX < 10) {
-            m_pos = e.x;
-            document.addEventListener("mousemove", resize, false);
-        }
-    }, false);
+  document.getElementById("sidebar").classList.remove("is-active");
+
+  toggleBtn.addEventListener("click", () => {
+    const sidebar = document.getElementById("sidebar");
+
+    const isActive = sidebar.classList.toggle("is-active");
+    overlay.classList.toggle("is-active", isActive);
+  });
+
+  overlay.addEventListener("click", () => {
+    const sidebar = document.getElementById("sidebar");
+
+    sidebar.classList.remove("is-active");
+    overlay.classList.remove("is-active");
+  });
 };
-
-document.addEventListener("mouseup", function() {
-    document.removeListener("mousemove", resize, false);
-}, false);
-*/
-/*
-function changeVideo(path) {
-    var player = document.getElementsByTagName('video')[0];
-    player.children[0].src = path;
-    player.load();
-}
-
-function changeAudio(path) {
-    var player = document.getElementsByTagName('audio')[0];
-    player.children[0].src = path;
-    player.load();
-}
-
-function changeImage(path) {
-    var viewer = document.getElementsByTagName('img')[0];
-    viewer.src = path;
-}
-*/
