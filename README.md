@@ -2,6 +2,25 @@
 
 💧 A project built with the Vapor web framework.
 
+A reimagination of my FastHTML project [Local Media Center](https://github.com/xXMacMillanXx/local-media-provider), since I wanted to play more around with Swift.
+
+It supports the same features:
+
+Currently the project is looking for a media folder in the Public directory. You can copy some files there to test, or create a symlink to a folder called media.
+
+```bash
+ln -s /path/to/media/you/want/to/see media
+```
+
+If you want to add online media (e.g., youtube videos) you can create a .link file which contains the link to the video. Copy the embed link from the video. (YouTube: Share -> Embed -> copy link from src attribute)
+
+For example, a link file for the Youtube rewind 2014, would look like this:
+Filename: *Youtube Rewind 2024.link*
+
+```text
+https://www.youtube.com/embed/zKx2B8WCQuw
+```
+
 ## Getting Started
 
 To build the project using the Swift Package Manager, run the following command in the terminal from the root of the project:
@@ -18,6 +37,7 @@ To execute tests, use the following command:
 ```bash
 swift test
 ```
+I didn't write tests, so... yeah.
 
 ### See more
 
