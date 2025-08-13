@@ -1,0 +1,25 @@
+#if(videoTag):
+    <video style="width:100%;max-height:92vh;" onloadstart="this.volume=get_vol()" onvolumechange="set_vol(this.volume)" controls="controls" autoplay="autoplay" loop="loop" preload="auto">
+        <source src="#(videoTag)" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+#elseif(audioTag):
+    <audio onloadstart="this.volume=get_vol()" onvolumechange="set_vol(this.volume)" controls="controls" autoplay="autoplay" preload="auto" style="width:100%;">
+        <source src="#(audioTag)" type="audio/mpeg">
+        Your browser does not support the audio tag.
+    </audio>
+#elseif(imageTag):
+    <img src="#(imageTag)" alt="Displaying Image">
+#elseif(documentTag):
+    <embed src="#(documentTag)" type="application/pdf" width="100%" style="height:92vh;">
+#elseif(webTag):
+    <iframe src="#(webTag)" title="Web Viewer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="allowfullscreen" width="100%" style="height:92vh;border:none;"></iframe>
+#else:
+    <div>
+        <h2>An issue occurred ...</h2>
+        <p>
+            The selected content is either unsupported or broken.<br>
+            This could also be an internal issue, please try selecting something different to see if it still works.
+        </p>
+    </div>
+#endif

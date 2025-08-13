@@ -4,6 +4,22 @@ struct VideoContext: Encodable {
     let videoTag: String
 }
 
+struct AudioContext: Encodable {
+    let audioTag: String
+}
+
+struct ImageContext: Encodable {
+    let imageTag: String
+}
+
+struct DocumentContext: Encodable {
+    let documentTag: String
+}
+
+struct WebContext: Encodable {
+    let webTag: String
+}
+
 struct SidebarContext: Encodable {
     let path: String
     let sidebarLinks: [String]
@@ -17,9 +33,9 @@ struct IndexContext: Encodable {
     let videoTag: String
 }
 
-let supported = [
+let supported: [String: Set<String>] = [
     "video": [".mp4", ".webm", ".ogg"],
-    "audio": [".mp3", ".wav", ".ogg"],
+    "audio": [".mp3", ".wav", ".ogg", ".flac"],
     "image": [
         ".apng", ".gif", ".ico", ".cur", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg",
         ".webp",
@@ -28,27 +44,23 @@ let supported = [
     "web": [".link"],
 ]
 
-var supportedMedia: [String] {
-    var supportedFormats: [String] = []
+var supportedMediaGen: Set<String> {
+    var supportedFormats = Set<String>()
     for fileFormats in supported.values {
-        supportedFormats += fileFormats
+        supportedFormats.formUnion(fileFormats)
     }
     return supportedFormats
 }
+let supportedMedia = supportedMediaGen
 
 func contentFilter(name: String) -> Bool {
-    for videoFormat in supportedMedia {
-        if name.hasSuffix(videoFormat) {
+    if let index = name.lastIndex(of: ".") {
+        if supportedMedia.contains(name.suffix(from: index).lowercased()) {
             return true
         }
     }
     return false
 }
-
-/* TODO
- * - change player dependent on media (video, autio, document, ...)
- * - Videos with [] in name have %20 instead of spaces...
-*/
 
 func routes(_ app: Application) throws {
     app.get { req -> EventLoopFuture<View> in
@@ -72,8 +84,41 @@ func routes(_ app: Application) throws {
     }
 
     app.get("content", "**") { req -> View in
-        let path = req.parameters.getCatchall().joined(separator: "/")
-        return try await req.view.render("video", VideoContext(videoTag: path))
+        guard  // rm and add seems stupid, but if [ or ] is included only parts are encoded T-T
+            let path = req.parameters.getCatchall().joined(separator: "/").removingPercentEncoding?
+                .addingPercentEncoding(withAllowedCharacters: CharacterSet.urlPathAllowed),
+            let index = path.lastIndex(of: ".")
+        else {
+            return try await req.view.render("content")
+        }
+
+        func handles(filetype supportName: String) -> Bool {
+            supported[supportName]?.contains(path.suffix(from: index).lowercased()) ?? false
+        }
+
+        func contentView(_ context: any Encodable) async throws -> View {
+            return try await req.view.render("content", context)
+        }
+
+        if handles(filetype: "video") {
+            return try await contentView(VideoContext(videoTag: path))
+        } else if handles(filetype: "audio") {
+            return try await contentView(AudioContext(audioTag: path))
+        } else if handles(filetype: "image") {
+            return try await contentView(ImageContext(imageTag: path))
+        } else if handles(filetype: "document") {
+            return try await contentView(DocumentContext(documentTag: path))
+        } else if handles(filetype: "web") {
+            if let fileContent = try? String(
+                contentsOfFile:
+                    "\(app.directory.publicDirectory)\(path.removingPercentEncoding ?? "")",
+                encoding: String.Encoding.utf8)
+            {
+                return try await contentView(WebContext(webTag: fileContent))
+            }
+        }
+
+        return try await req.view.render("content")
     }
 
     app.get("contentdirectory", "**") { req -> View in
@@ -111,11 +156,11 @@ func routes(_ app: Application) throws {
         let search = req.parameters.get("search") ?? ""
 
         let files = Utils.getFiles(atPath: "\(app.directory.publicDirectory)\(dir)").filter({
-            $0.hasPrefix(search)
+            $0.lowercased().hasPrefix(search.lowercased())
         })
         let directories = Utils.getDirectories(atPath: "\(app.directory.publicDirectory)\(dir)")
             .filter({
-                $0.hasPrefix(search)
+                $0.lowercased().hasPrefix(search.lowercased())
             })
 
         return try await req.view.render(

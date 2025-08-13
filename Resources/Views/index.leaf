@@ -15,7 +15,7 @@
             <div class="main-section">
                 #extend("searchbar")
                 <div id="content" class="content-area">
-                    #extend("video")
+                    #extend("content")
                 </div>
             </div>
         </div>
