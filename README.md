@@ -23,6 +23,15 @@ https://www.youtube.com/embed/zKx2B8WCQuw
 
 ## Getting Started
 
+
+### Dependencies
+
+The project uses [HTMX](https://github.com/bigskysoftware/htmx) 2.0.7 and [Bulma](https://github.com/jgthms/bulma) 1.0.4.
+
+See `Resources/Views/index.leaf` for the links and path. I renamed the htmx.min.js and bulma.min.css to include their version number.
+
+### Run the project
+
 To build the project using the Swift Package Manager, run the following command in the terminal from the root of the project:
 ```bash
 swift build
