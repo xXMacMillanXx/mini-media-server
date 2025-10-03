@@ -27,8 +27,8 @@ window.onload = function () {
   toggleBtn.addEventListener("click", () => {
     const sidebar = document.getElementById("sidebar");
 
-    const isActive = sidebar.classList.toggle("is-active");
-    overlay.classList.toggle("is-active", isActive);
+    const isActive = sidebar.classList.add("is-active");
+    overlay.classList.add("is-active", isActive);
   });
 
   overlay.addEventListener("click", () => {
@@ -37,4 +37,15 @@ window.onload = function () {
     sidebar.classList.remove("is-active");
     overlay.classList.remove("is-active");
   });
+
+  function screenSizeChanged(e) {
+    if (e.matches) {
+      document.getElementById("sidebar").classList.remove("is-active");
+      document.getElementById("overlay").classList.remove("is-active");
+    }
+  }
+
+  const screenQuery = window.matchMedia("(max-width: 768px)");
+  screenSizeChanged(screenQuery);
+  screenQuery.addEventListener("change", screenSizeChanged);
 };

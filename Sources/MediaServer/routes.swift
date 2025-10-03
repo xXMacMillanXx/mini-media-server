@@ -99,8 +99,6 @@ func routes(_ app: Application) throws {
             return try await req.view.render("content")
         }
 
-        print(path)
-
         func handles(filetype supportName: String) -> Bool {
             supported[supportName]?.contains(path.suffix(from: index).lowercased()) ?? false
         }

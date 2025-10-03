@@ -36,6 +36,10 @@ body {
         transform: translateX(0);
         background-color: var(--bulma-black-bis);
     }
+    #toggleSidebar {
+        /* workaround in case someone searches while using a small screen to close the search results */
+        z-index: 100;
+    }
 }
 
 .overlay {
