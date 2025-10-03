@@ -7,5 +7,5 @@
             <span></span>
         </span>
     </button>
-    <input class="input is-rounded" oninput="updateSidebar(this.value)" type="search" name="search" list="searchwords" placeholder="Search...">
+    <input class="input is-rounded" hx-get="/sidebarsearch" hx-trigger="input changed delay:500ms, search" hx-swap="outerHTML" hx-target="#sidebar" hx-vals='js:{value: this.value}' type="search" name="search" list="searchwords" placeholder="Search...">
 </div>

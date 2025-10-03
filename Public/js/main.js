@@ -18,27 +18,6 @@ function set_sidebar_width(size) {
   r.style.setProperty("--topbar-pad-left", size + 15 + "px");
 }
 
-async function changeContent(path) {
-  const res = await fetch(`/content/${path}`);
-  const html = await res.text();
-  document.getElementById("content").innerHTML = html;
-}
-
-async function changeDirectory(path) {
-  const res = await fetch(`/contentdirectory/${path}`);
-  const html = await res.text();
-  document.getElementById("sidebar").outerHTML = html;
-}
-
-async function updateSidebar(search) {
-  if (search == "..") {
-    return;
-  }
-  const res = await fetch(`/sidebarsearch/${search}`);
-  const html = await res.text();
-  document.getElementById("sidebar").outerHTML = html;
-}
-
 window.onload = function () {
   const toggleBtn = document.getElementById("toggleSidebar");
   const overlay = document.getElementById("overlay");

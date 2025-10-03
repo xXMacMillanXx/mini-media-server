@@ -3,10 +3,10 @@
         <p class="menu-label">Navigation</p>
         <ul class="menu-list">
             #for(dir in sidebarDirectories):
-                <li><a href="#" onclick="changeDirectory('#(path)#(dir)');clear_searchbar();">#(dir)</a></li>
+                <li><a hx-get="/contentdirectory" hx-swap="outerHTML" hx-target="#sidebar" hx-vals='{"value": "#(path)#(dir)", "name": "#(dir)", "path": "#(path)"}' onclick="clear_searchbar();">#(dir)</a></li>
             #endfor
             #for(link in sidebarLinks):
-                <li><a href="#" onclick="changeContent('#(path)#(link)');">#(link)</a></li>
+                <li><a hx-get="/content" hx-target="#content" hx-vals='{"value": "#(path)#(link)", "name": "#(link)", "path": "#(path)"}'>#(link)</a></li>
             #endfor
         </ul>
         <datalist id="searchwords">

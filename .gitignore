@@ -11,3 +11,5 @@ db.sqlite
 .env
 .env.*
 !.env.example
+htmx*.js
+bulma*.css

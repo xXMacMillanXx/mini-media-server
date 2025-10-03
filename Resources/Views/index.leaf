@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Media Center</title>
         <link rel="stylesheet" href="/css/main.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+        <link rel="stylesheet" href="/css/bulma.min.104.css">
         <script src="/js/main.js"></script>
     </head>
     <body>
@@ -19,5 +19,6 @@
                 </div>
             </div>
         </div>
+        <script src="/js/htmx.min.207.js"></script>
     </body>
 </html>

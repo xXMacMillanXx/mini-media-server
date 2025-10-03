@@ -1,5 +1,11 @@
 import Vapor
 
+struct MediaContent: Content {
+    let value: String?
+    let name: String?
+    let path: String?
+}
+
 struct VideoContext: Encodable {
     let videoTag: String
 }
@@ -83,14 +89,17 @@ func routes(_ app: Application) throws {
             ))
     }
 
-    app.get("content", "**") { req -> View in
-        guard  // rm and add seems stupid, but if [ or ] is included only parts are encoded T-T
-            let path = req.parameters.getCatchall().joined(separator: "/").removingPercentEncoding?
-                .addingPercentEncoding(withAllowedCharacters: CharacterSet.urlPathAllowed),
+    // lifesaver: https://docs.vapor.codes/basics/content/
+    app.get("content") { req -> View in
+        guard
+            let path = try req.query.decode(MediaContent.self).value?.addingPercentEncoding(
+                withAllowedCharacters: CharacterSet.urlPathAllowed),
             let index = path.lastIndex(of: ".")
         else {
             return try await req.view.render("content")
         }
+
+        print(path)
 
         func handles(filetype supportName: String) -> Bool {
             supported[supportName]?.contains(path.suffix(from: index).lowercased()) ?? false
@@ -121,8 +130,16 @@ func routes(_ app: Application) throws {
         return try await req.view.render("content")
     }
 
-    app.get("contentdirectory", "**") { req -> View in
-        let path = "/\(req.parameters.getCatchall().joined(separator: "/"))/"
+    app.get("contentdirectory") { req -> View in
+        var path = "\(try req.query.decode(MediaContent.self).value ?? "")/"
+        let name = req.query["name"] ?? ""
+        let old_path = req.query["path"] ?? ""
+
+        if name == ".." {
+            if let index = old_path.dropLast().lastIndex(of: "/") {
+                path = String(old_path[...index])
+            }
+        }
         req.session.data["dir"] = path
 
         var links = Utils.getFilesAndDirectories(atPath: "\(app.directory.publicDirectory)\(path)")
@@ -151,9 +168,9 @@ func routes(_ app: Application) throws {
                 sidebarDirectories: links.directories))
     }
 
-    app.get("sidebarsearch", ":search") { req -> View in
+    app.get("sidebarsearch") { req -> View in
         let dir = req.session.data["dir"] ?? ""
-        let search = req.parameters.get("search") ?? ""
+        let search = req.query["value"] ?? ""
 
         let files = Utils.getFiles(atPath: "\(app.directory.publicDirectory)\(dir)").filter({
             $0.lowercased().hasPrefix(search.lowercased())
